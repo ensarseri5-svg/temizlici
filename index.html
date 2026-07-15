@@ -21,35 +21,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
             padding: 15px;
-            overflow: hidden;
-            position: relative;
+            overflow-y: auto;
         }
-
-        /* Arka Plan Neon Işık Efektleri (Cyberpunk Havası) */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, rgba(0,0,0,0) 70%);
-            top: -50px;
-            left: -50px;
-            z-index: 1;
-        }
-        body::after {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 0, 127, 0.12) 0%, rgba(0,0,0,0) 70%);
-            bottom: -50px;
-            right: -50px;
-            z-index: 1;
-        }
-
         .container {
             width: 100%;
             max-width: 420px;
@@ -58,35 +34,21 @@
             gap: 16px;
             z-index: 2;
         }
-
-        /* Başlık Alanı */
         header {
             text-align: center;
-            padding: 15px 0;
+            padding: 10px 0;
             border-bottom: 2px dashed rgba(0, 242, 254, 0.2);
-            position: relative;
         }
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             letter-spacing: 3px;
-            text-transform: uppercase;
             background: linear-gradient(90deg, #00f2fe, #ff007f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0px 0px 15px rgba(0, 242, 254, 0.3);
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
         }
-        .subtitle {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            color: #475569;
-            letter-spacing: 4px;
-            margin-top: 5px;
-            font-weight: 700;
-        }
-
-        /* Canlı İstatistik Kartları */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -100,136 +62,104 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s;
-        }
-        .stat-card:hover {
-            border-color: #00f2fe;
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
         }
         .stat-label {
             font-size: 10px;
             color: #64748b;
             text-transform: uppercase;
-            margin-bottom: 4px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
         .stat-value {
             font-family: 'Orbitron', sans-serif;
             font-size: 15px;
             font-weight: 700;
             color: #00f2fe;
-            text-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
         }
 
-        /* Buton Kartları Tasarımı */
+        /* 📊 CANLI KAYNAK SÖMÜRÜCÜLERİ PANELİ */
+        .monitor-card {
+            background: rgba(10, 12, 22, 0.9);
+            border: 1px solid rgba(255, 0, 127, 0.15);
+            border-radius: 14px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .monitor-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #ff007f;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
+            text-transform: uppercase;
+        }
+        .monitor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .monitor-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding-bottom: 4px;
+        }
+        .app-name { color: #f8fafc; font-weight: bold; }
+        .app-usage { font-family: 'Orbitron', sans-serif; }
+
+        /* Butonlar */
         .control-section {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
         .btn-card {
             background: rgba(13, 16, 30, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 14px;
-            padding: 16px 20px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.2s;
         }
-        .btn-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-        }
-
-        /* Buton Renkleri ve Basılma Efektleri */
-        .btn-red::before { background: #ff0055; }
-        .btn-red:active {
-            transform: scale(0.96);
-            border-color: #ff0055;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
-        }
+        .btn-red::before { content: ''; position: absolute; left:0; top:0; width:5px; height:100%; background: #ff0055; }
+        .btn-red { position: relative; overflow: hidden; }
+        .btn-red:active { transform: scale(0.97); box-shadow: 0 0 15px rgba(255, 0, 85, 0.4); }
         
-        .btn-green::before { background: #00ff66; }
-        .btn-green:active {
-            transform: scale(0.96);
-            border-color: #00ff66;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
-        }
-        
-        .btn-blue::before { background: #00bfff; }
-        .btn-blue:active {
-            transform: scale(0.96);
-            border-color: #00bfff;
-            box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
-        }
+        .btn-blue::before { content: ''; position: absolute; left:0; top:0; width:5px; height:100%; background: #00bfff; }
+        .btn-blue { position: relative; overflow: hidden; }
+        .btn-blue:active { transform: scale(0.97); box-shadow: 0 0 15px rgba(0, 191, 255, 0.4); }
 
-        /* Buton İçeriği */
-        .btn-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-width: 80%;
-        }
-        .btn-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 15px;
-            font-weight: 900;
-            color: #f8fafc;
-            letter-spacing: 1px;
-        }
-        .btn-desc {
-            font-size: 11px;
-            color: #64748b;
-            line-height: 1.3;
-        }
-        .btn-icon {
-            font-size: 24px;
-            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
-        }
+        .btn-info { display: flex; flex-direction: column; gap: 2px; max-width: 80%; }
+        .btn-title { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; }
+        .btn-desc { font-size: 11px; color: #64748b; }
 
-        /* Harika Bildirim Penceresi (Toast) */
         #toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             background: rgba(4, 5, 10, 0.95);
             border: 2px solid #00f2fe;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
             color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
+            padding: 10px 20px;
+            border-radius: 20px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
             opacity: 0;
             transform: translateY(50px);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
             z-index: 1000;
-            letter-spacing: 1px;
-            text-align: center;
         }
-        #toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        #toast.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>⚡ APEX ENGINE v12 ⚡</h1>
-            <div class="subtitle">STEALTH PERFORMANCE PANEL</div>
+            <h1>⚡ APEX KERNEL CONTROLLER ⚡</h1>
         </header>
 
         <div class="stats-grid">
@@ -242,137 +172,101 @@
                 <span class="stat-value" id="ram-usage">54%</span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Gecikme</span>
-                <span class="stat-value" id="ping-val">21 ms</span>
+                <span class="stat-label">Ping (MS)</span>
+                <span class="stat-value" id="ping-val" style="color: #00ff66;">4 ms</span>
             </div>
         </div>
 
+        <div class="monitor-card">
+            <div class="monitor-title">⚠️ EN ÇOK TÜKETEN UYGULAMALAR</div>
+            <div class="monitor-list" id="resource-list">
+                </div>
+        </div>
+
         <div class="control-section">
-            <div class="btn-card btn-red" onclick="triggerAction('tam-hiz', 'İŞLEMCİ KİLİTLENDİ! ⚡')">
+            <div class="btn-card btn-red" onclick="runRoot('tam-hiz')">
                 <div class="btn-info">
                     <span class="btn-title" style="color: #ff0055;">🚀 MAX PERFORMANCE</span>
-                    <span class="btn-desc">Tüm işlemci çekirdeklerini en yüksek frekansta kilitler.</span>
+                    <span class="btn-desc">İşlemciyi en yüksek hıza kilitler, gecikmeyi (ms) düşürür.</span>
                 </div>
-                <div class="btn-icon">🔥</div>
+                <span>🔥</span>
             </div>
 
-            <div class="btn-card btn-green" onclick="triggerAction('pil', 'PİL TASARRUFU AKTİF! 🔋')">
+            <div class="btn-card btn-blue" onclick="runRoot('ram')">
                 <div class="btn-info">
-                    <span class="btn-title" style="color: #00ff66;">🔋 ECO SAVER</span>
-                    <span class="btn-desc">Frekansları dengeler ve şarj tüketimini minimuma indirir.</span>
+                    <span class="btn-title" style="color: #00bfff;">🧹 RAM & CACHE FLUSH</span>
+                    <span class="btn-desc">Arka plandaki sömürücüleri kazır, hafızayı sıfırlar.</span>
                 </div>
-                <div class="btn-icon">🍃</div>
-            </div>
-
-            <div class="btn-card btn-blue" onclick="triggerAction('ram', 'SÜPER TEMİZLİK BAŞARIYLA TAMAMLANDI! ✨')">
-                <div class="btn-info">
-                    <span class="btn-title" style="color: #00bfff;">🧹 MEMORY CLEANER</span>
-                    <span class="btn-desc">Sistem RAM ve uygulama atık dosyalarını kökten temizler.</span>
-                </div>
-                <div class="btn-icon">✨</div>
+                <span>✨</span>
             </div>
         </div>
     </div>
 
-    <div id="toast">YÜKLENİYOR...</div>
+    <div id="toast">BAĞLANTI OK</div>
 
     <script>
-        // Bildirim Gösterme Fonksiyonu
         function showToast(text, color = '#00f2fe') {
             const toast = document.getElementById('toast');
             toast.style.borderColor = color;
-            toast.style.boxShadow = `0 0 20px ${color}66`;
             toast.innerText = text;
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
-        // Java Köprüsüne Komut Gönderme Fonksiyonu
-        function executeRootShell(command) {
-            try {
-                if (window.Android && window.Android.executeShare) {
-                    window.Android.executeShare(command);
-                } else {
-                    const execFrame = document.createElement('iframe');
-                    execFrame.style.display = 'none';
-                    execFrame.src = 'custom-root-exec://' + btoa(command);
-                    document.body.appendChild(execFrame);
-                    setTimeout(() => execFrame.remove(), 1000);
-                }
-            } catch (e) {
-                console.log("Root tetikleme hatası (Tarayıcı simülasyonu çalışıyor)");
+        // HIZLI VE MS GECİKMESİZ JAVA TETİKLEME KÖPRÜSÜ
+        function runRoot(action) {
+            showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
+            if (window.AndroidBridge) {
+                // Java'daki köprüyü anında tetikler (Milisaniyeler içinde!)
+                window.AndroidBridge.performAction(action);
+            } else {
+                showToast("Simülasyon Aktif (Java Köprüsü Yok)", "#ff0055");
             }
         }
 
-        // Ana Buton Kontrol Merkezi
-        function triggerAction(type, message) {
-            let toastColor = '#00f2fe';
-            
-            if (type === 'ram') {
-                toastColor = '#00bfff';
-                
-                // 1. AŞAMA: Tarama animasyonunu başlat
-                document.getElementById('ping-val').innerText = "999 ms"; // Tarama esnasında gecikmeyi yükseltelim
-                showToast("🔍 ATIK DOSYALAR VE ÖNBELLEK TARANIYOR...", toastColor);
-                
-                // Root Komutunu Gönder (Drop caches, trim caches, fstrim, kill processes)
-                const ramCmd = "su -c 'echo 3 > /proc/sys/vm/drop_caches && pm trim-caches 4G && fstrim -v /data && am kill-all'";
-                executeRootShell(ramCmd);
-
-                // 2. AŞAMA: Temizlik simülasyonu
-                setTimeout(() => {
-                    showToast("✨ SİSTEM BELLEĞİ ARINDIRILIYOR...", toastColor);
-                    
-                    // Göstergeleri sıfırla/güzelleştir
-                    document.getElementById('ram-usage').innerText = "23%"; // RAM temizlendi
-                    document.getElementById('ping-val').innerText = "12 ms"; // Bağlantı rahatladı
-                    
-                    setTimeout(() => {
-                        showToast(message, toastColor);
-                    }, 1200);
-                    
-                }, 1500);
-
-            } else if (type === 'tam-hiz') {
-                toastColor = '#ff0055';
-                showToast("⚡ PERFORMANS KİLİDİ AKTİF EDİLİYOR...", toastColor);
-                
-                const perfCmd = "su -c 'cmd power set-fixed-performance-mode-enabled true && settings put global max_cached_processes 1 && settings put global window_animation_scale 0 && settings put global transition_animation_scale 0 && settings put global animator_duration_scale 0'";
-                executeRootShell(perfCmd);
-
-                setTimeout(() => {
-                    showToast(message, toastColor);
-                }, 1000);
-
-            } else if (type === 'pil') {
-                toastColor = '#00ff66';
-                showToast("🍃 GÜÇ TASARRUFU REJİMİNE GEÇİLİYOR...", toastColor);
-                
-                const ecoCmd = "su -c 'cmd power set-fixed-performance-mode-enabled false && settings put global max_cached_processes 32 && settings put global window_animation_scale 1 && settings put global transition_animation_scale 1 && settings put global animator_duration_scale 1'";
-                executeRootShell(ecoCmd);
-
-                setTimeout(() => {
-                    showToast(message, toastColor);
-                }, 1000);
+        // Java'dan tetiklenecek geri bildirim fonksiyonu
+        function onActionCompleted(action, msg) {
+            if (action === 'ram') {
+                document.getElementById('ram-usage').innerText = "18%";
+                showToast("TEMİZLENDİ: " + msg, "#00bfff");
+                updateMonitorData(true); // Verileri sıfırla
+            } else {
+                showToast("PERFORMANS: " + msg, "#ff0055");
             }
         }
 
-        // Canlı Gösterge Değişimleri (Ekranın hareketli kalmasını sağlar)
+        // Canlı Kaynak Tüketim Verileri (Simüle edilen sömürücüler)
+        const apps = [
+            { name: "Instagram", ram: "1.2 GB", cpu: "%28", battery: "Yüksek" },
+            { name: "TikTok", ram: "950 MB", cpu: "%34", battery: "Aşırı" },
+            { name: "Google Play Servisleri", ram: "420 MB", cpu: "%12", battery: "Orta" },
+            { name: "WhatsApp", ram: "310 MB", cpu: "%8", battery: "Düşük" },
+            { name: "Sistem Arayüzü", ram: "550 MB", cpu: "%15", battery: "Orta" }
+        ];
+
+        function updateMonitorData(cleaned = false) {
+            const list = document.getElementById('resource-list');
+            list.innerHTML = "";
+            if (cleaned) {
+                list.innerHTML = `<div style="color:#00ff66; text-align:center; font-weight:bold;">✨ TÜM ARKA PLAN SİLİNDİ! SİSTEM AKICI.</div>`;
+                return;
+            }
+            // Sömürenleri listele
+            apps.forEach(app => {
+                list.innerHTML += `
+                    <div class="monitor-item">
+                        <span class="app-name">${app.name}</span>
+                        <span class="app-usage" style="color: #ff007f;">RAM: ${app.ram} | CPU: ${app.cpu} | Pil: ${app.battery}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // İlk yükleme ve döngüsel ısı takipleri
+        updateMonitorData();
         setInterval(() => {
-            // Isı 36-42 arası değişir
-            document.getElementById('cpu-temp').innerText = (36 + Math.floor(Math.random() * 7)) + "°C";
-            // RAM sadece temizlik değilken dalgalanır
-            const currentRam = document.getElementById('ram-usage').innerText;
-            if (parseInt(currentRam) > 30) {
-                document.getElementById('ram-usage').innerText = (45 + Math.floor(Math.random() * 20)) + "%";
-            }
-            // Ping 14-25 arası dalgalanır
-            const currentPing = document.getElementById('ping-val').innerText;
-            if (currentPing !== "999 ms") {
-                document.getElementById('ping-val').innerText = (14 + Math.floor(Math.random() * 10)) + " ms";
-            }
+            document.getElementById('cpu-temp').innerText = (35 + Math.floor(Math.random() * 8)) + "°C";
         }, 3000);
     </script>
 </body>
 </html>
-
