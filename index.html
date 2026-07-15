@@ -258,87 +258,81 @@
 
     <script>
         function showToast(text, color = '#00f2fe') {
-            const toast = document.getElementById('toast');
-            toast.style.borderColor = color;
-            toast.innerText = text;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+    const toast = document.getElementById('toast');
+    toast.style.borderColor = color;
+    toast.innerText = text;
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 2000);
+}
+
+// GECİKMESİZ JAVA TETİKLEME KÖPRÜSÜ
+function runRoot(action) {
+    showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
+    if (window.AndroidBridge) {
+        window.AndroidBridge.performAction(action);
+    } else {
+        showToast("Simülasyon Modu (Köprü Yok)", "#ff0055");
+        setTimeout(() => {
+            onActionCompleted(action, "Tamamlandı (Simüle)");
+        }, 1000);
+    }
+}
+
+// Java'dan tetiklenen root geri bildirimi
+function onActionCompleted(action, msg) {
+    if (action === 'ram') {
+        showToast("TEMİZLENDİ: " + msg, "#00bfff");
+        // Temizleme sonrası geçici olarak temizlendi animasyonu yap
+        const list = document.getElementById('resource-list');
+        list.innerHTML = `
+            <div style="color:#00ff66; text-align:center; font-weight:bold; font-size: 13px; padding: 10px 0;">
+                ✨ TÜM SÖMÜRÜCÜLER KAZINDI! SİSTEM AKICI.
+            </div>
+        `;
+    } else if (action === 'tam-hiz') {
+        showToast("PERFORMANS MODU: " + msg, "#ff0055");
+    }
+}
+
+// SİSTEM GÖSTERGELERİ (Java her 2 saniyede bir günceller)
+function updateMetrics(ram, temp, speed) {
+    document.getElementById("ram-val").innerText = ram + "%";
+    document.getElementById("temp-val").innerText = temp;
+    document.getElementById("speed-val").innerText = speed;
+}
+
+// CİHAZDAN GELEN GERÇEK UYGULAMALAR (Java her 2 saniyede bir günceller)
+function updateRealApps(jsonString) {
+    try {
+        const realApps = JSON.parse(jsonString);
+        const list = document.getElementById('resource-list');
+        
+        // Eğer az önce temizlik butonuna basıldıysa ve liste temizlendiyse hemen üzerine yazmasın diye kontrol
+        if (list.innerText.includes("TÜM SÖMÜRÜCÜLER KAZINDI")) return;
+
+        list.innerHTML = "";
+        
+        if (realApps.length === 0) {
+            list.innerHTML = `<div style="color:#64748b; text-align:center; font-size:12px; padding:10px;">Arka planda çalışan uygulama bulunamadı.</div>`;
+            return;
         }
 
-        // HIZLI VE MS GECİKMESİZ JAVA TETİKLEME KÖPRÜSÜ
-        function runRoot(action) {
-            showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
-            if (window.AndroidBridge) {
-                window.AndroidBridge.performAction(action);
-            } else {
-                showToast("Simülasyon Modu (Köprü Yok)", "#ff0055");
-                // Köprü yoksa test amaçlı simüle et
-                setTimeout(() => {
-                    onActionCompleted(action, "Tamamlandı (Simüle)");
-                }, 1000);
-            }
-        }
-
-        // Java komutu başarıyla çalıştırdığında bu fonksiyonu tetikleyecek
-        function onActionCompleted(action, msg) {
-            if (action === 'ram') {
-                showToast("TEMİZLENDİ: " + msg, "#00bfff");
-                clearMonitorList();
-            } else if (action === 'tam-hiz') {
-                showToast("PERFORMANS MODU: " + msg, "#ff0055");
-            }
-        }
-
-        // SİSTEM GÖSTERGELERİNİ GÜNCELLEYEN KLASİK METOT (Java her 2 saniyede bir tetikler)
-        function updateMetrics(ram, temp, speed) {
-            document.getElementById("ram-val").innerText = ram + "%";
-            document.getElementById("temp-val").innerText = temp;
-            document.getElementById("speed-val").innerText = speed;
-        }
-
-        // Sömüren uygulamalar listesi veri tabanı
-        const originalApps = [
-            { name: "Instagram", ram: "1.2 GB", cpu: "%28", battery: "Yüksek" },
-            { name: "TikTok", ram: "950 MB", cpu: "%34", battery: "Aşırı" },
-            { name: "Google Play Servisleri", ram: "420 MB", cpu: "%12", battery: "Orta" },
-            { name: "Sistem Arayüzü", ram: "550 MB", cpu: "%15", battery: "Orta" }
-        ];
-
-        function loadMonitorData() {
-            const list = document.getElementById('resource-list');
-            list.innerHTML = "";
-            originalApps.forEach(app => {
-                list.innerHTML += `
-                    <div class="monitor-item">
-                        <div class="app-header">
-                            <span class="app-name">${app.name}</span>
-                            <span class="app-warn">Sömürüyor</span>
-                        </div>
-                        <div class="app-details">
-                            <span class="detail-tag">RAM: ${app.ram}</span>
-                            <span class="detail-tag">CPU: ${app.cpu}</span>
-                            <span class="detail-tag" style="color: #ff007f;">PİL: ${app.battery}</span>
-                        </div>
+        realApps.forEach(app => {
+            list.innerHTML += `
+                <div class="monitor-item">
+                    <div class="app-header">
+                        <span class="app-name">${app.name}</span>
+                        <span class="app-warn">Aktif Sömürü</span>
                     </div>
-                `;
-            });
-        }
-
-        function clearMonitorList() {
-            const list = document.getElementById('resource-list');
-            list.innerHTML = `
-                <div style="color:#00ff66; text-align:center; font-weight:bold; font-size: 13px; padding: 10px 0;">
-                    ✨ TÜM SÖMÜRÜCÜLER KAZINDI! SİSTEM AKICI.
+                    <div class="app-details">
+                        <span class="detail-tag">RAM: ${app.ram}</span>
+                        <span class="detail-tag">CPU: ${app.cpu}</span>
+                        <span class="detail-tag" style="color: #ff007f;">PİL: ${app.battery}</span>
+                    </div>
                 </div>
             `;
-            // 8 saniye sonra listeyi yavaş yavaş tekrar simüle et (sistem yeni servisleri açtıkça)
-            setTimeout(() => {
-                loadMonitorData();
-            }, 8000);
-        }
-
-        // İlk açılışta sömüren listesini yükle
-        loadMonitorData();
-    </script>
-</body>
-</html>
+        });
+    } catch (e) {
+        console.error("JSON Parse Hatası: ", e);
+    }
+}
