@@ -2,18 +2,11 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Apex Kernel Controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Controller</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
     <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
         body {
             background-color: #030408;
             color: #e2e8f0;
@@ -21,187 +14,47 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
             padding: 15px;
-            overflow-y: auto;
         }
-        .container {
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            z-index: 2;
-        }
-        header {
-            text-align: center;
-            padding: 10px 0;
-            border-bottom: 2px dashed rgba(0, 242, 254, 0.2);
-        }
+        .container { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 16px; }
+        header { text-align: center; padding: 10px 0; border-bottom: 2px dashed rgba(0, 242, 254, 0.2); }
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900;
             background: linear-gradient(90deg, #00f2fe, #ff007f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        
-        /* 📊 GERÇEK ZAMANLI TELEMETRİ GÖSTERGELERİ */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .stat-card {
-            background: rgba(10, 12, 22, 0.85);
-            border: 1px solid rgba(0, 242, 254, 0.15);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.05);
+            background: rgba(10, 12, 22, 0.85); border: 1px solid rgba(0, 242, 254, 0.15);
+            border-radius: 12px; padding: 12px; display: flex; flex-direction: column; align-items: center;
         }
-        .stat-label {
-            font-size: 10px;
-            color: #64748b;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-        .stat-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: #00f2fe;
-            text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
-        }
-
-        /* 🔋 ARKA PLAN SÖMÜRÜCÜLERİ */
-        .monitor-card {
-            background: rgba(10, 12, 22, 0.9);
-            border: 1px solid rgba(255, 0, 127, 0.15);
-            border-radius: 14px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-        .monitor-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            color: #ff007f;
-            margin-bottom: 12px;
-            text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #ff007f;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px #ff007f;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
-        .monitor-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .monitor-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            padding-bottom: 8px;
-        }
-        .monitor-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .app-name { color: #f8fafc; }
-        .app-warn { color: #ff9f00; font-size: 10px; padding: 1px 5px; background: rgba(255, 159, 0, 0.1); border-radius: 4px; }
-        .app-details {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #94a3b8;
-        }
-        .detail-tag {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* 🔘 BUTONLAR */
-        .control-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .btn-card {
-            background: rgba(13, 16, 30, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.1s, box-shadow 0.2s;
-        }
-        .btn-card:active {
-            transform: scale(0.97);
-        }
-        .btn-red::before { content: ''; position: absolute; left:0; top:0; width:5px; height:100%; background: #ff0055; }
-        .btn-red:active { box-shadow: 0 0 15px rgba(255, 0, 85, 0.4); }
+        .stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+        .stat-value { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; color: #00f2fe; }
         
-        .btn-blue::before { content: ''; position: absolute; left:0; top:0; width:5px; height:100%; background: #00bfff; }
-        .btn-blue:active { box-shadow: 0 0 15px rgba(0, 191, 255, 0.4); }
+        .monitor-card { background: rgba(10, 12, 22, 0.9); border: 1px solid rgba(255, 0, 127, 0.15); border-radius: 14px; padding: 15px; }
+        .monitor-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #ff007f; margin-bottom: 12px; }
+        .monitor-list { display: flex; flex-direction: column; gap: 10px; }
+        .monitor-item { display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); padding-bottom: 8px; }
+        .app-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+        .app-name { color: #f8fafc; }
+        .app-details { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; }
+        .detail-tag { background: rgba(255, 255, 255, 0.02); padding: 2px 6px; border-radius: 4px; }
 
-        .btn-info { display: flex; flex-direction: column; gap: 2px; max-width: 80%; }
+        .control-section { display: flex; flex-direction: column; gap: 12px; }
+        .btn-card {
+            background: rgba(13, 16, 30, 0.9); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px; padding: 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+        }
+        .btn-card:active { transform: scale(0.97); }
         .btn-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; }
         .btn-desc { font-size: 11px; color: #64748b; }
 
-        /* TOAST BİLDİRİM */
         #toast {
-            position: fixed;
-            bottom: 20px;
-            background: rgba(4, 5, 10, 0.95);
-            border: 2px solid #00f2fe;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.3s;
-            z-index: 1000;
+            position: fixed; bottom: 20px; background: rgba(4, 5, 10, 0.95); border: 2px solid #00f2fe;
+            color: #fff; padding: 10px 20px; border-radius: 20px; font-family: 'Orbitron', sans-serif;
+            font-size: 11px; opacity: 0; transition: all 0.3s; z-index: 1000;
         }
-        #toast.show { opacity: 1; transform: translateY(0); }
+        #toast.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -227,27 +80,25 @@
         </div>
 
         <div class="monitor-card">
-            <div class="monitor-title">
-                <span>⚠️ EN ÇOK TÜKETEN UYGULAMALAR</span>
-                <span class="live-dot"></span>
-            </div>
+            <div class="monitor-title">⚠️ EN ÇOK TÜKETEN UYGULAMALAR (CİHAZDAN)</div>
             <div class="monitor-list" id="resource-list">
-                </div>
+                <div style="color: #64748b; text-align: center; font-size: 12px; padding: 10px;">Yükleniyor...</div>
+            </div>
         </div>
 
         <div class="control-section">
-            <div class="btn-card btn-red" onclick="runRoot('tam-hiz')">
-                <div class="btn-info">
-                    <span class="btn-title" style="color: #ff0055;">🚀 MAX PERFORMANCE</span>
-                    <span class="btn-desc">İşlemciyi en yüksek hıza kilitler, gecikmeyi (ms) sıfıra indirir.</span>
+            <div class="btn-card" onclick="runRoot('tam-hiz')" style="border-left: 5px solid #ff0055;">
+                <div>
+                    <div class="btn-title" style="color: #ff0055;">🚀 MAX PERFORMANCE</div>
+                    <div class="btn-desc">İşlemciyi en yüksek hıza kilitler, gecikmeyi sıfırlar.</div>
                 </div>
                 <span>🔥</span>
             </div>
 
-            <div class="btn-card btn-blue" onclick="runRoot('ram')">
-                <div class="btn-info">
-                    <span class="btn-title" style="color: #00bfff;">🧹 RAM & CACHE FLUSH</span>
-                    <span class="btn-desc">Arka plandaki sömürücüleri kazır, önbelleği temizler.</span>
+            <div class="btn-card" onclick="runRoot('ram')" style="border-left: 5px solid #00bfff;">
+                <div>
+                    <div class="btn-title" style="color: #00bfff;">🧹 RAM & CACHE FLUSH</div>
+                    <div class="btn-desc">Arka plandaki sömürücüleri kazır, önbelleği temizler.</div>
                 </div>
                 <span>✨</span>
             </div>
@@ -258,81 +109,66 @@
 
     <script>
         function showToast(text, color = '#00f2fe') {
-    const toast = document.getElementById('toast');
-    toast.style.borderColor = color;
-    toast.innerText = text;
-    toast.classList.add('show');
-    setTimeout(() => { toast.classList.remove('show'); }, 2000);
-}
-
-// GECİKMESİZ JAVA TETİKLEME KÖPRÜSÜ
-function runRoot(action) {
-    showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
-    if (window.AndroidBridge) {
-        window.AndroidBridge.performAction(action);
-    } else {
-        showToast("Simülasyon Modu (Köprü Yok)", "#ff0055");
-        setTimeout(() => {
-            onActionCompleted(action, "Tamamlandı (Simüle)");
-        }, 1000);
-    }
-}
-
-// Java'dan tetiklenen root geri bildirimi
-function onActionCompleted(action, msg) {
-    if (action === 'ram') {
-        showToast("TEMİZLENDİ: " + msg, "#00bfff");
-        // Temizleme sonrası geçici olarak temizlendi animasyonu yap
-        const list = document.getElementById('resource-list');
-        list.innerHTML = `
-            <div style="color:#00ff66; text-align:center; font-weight:bold; font-size: 13px; padding: 10px 0;">
-                ✨ TÜM SÖMÜRÜCÜLER KAZINDI! SİSTEM AKICI.
-            </div>
-        `;
-    } else if (action === 'tam-hiz') {
-        showToast("PERFORMANS MODU: " + msg, "#ff0055");
-    }
-}
-
-// SİSTEM GÖSTERGELERİ (Java her 2 saniyede bir günceller)
-function updateMetrics(ram, temp, speed) {
-    document.getElementById("ram-val").innerText = ram + "%";
-    document.getElementById("temp-val").innerText = temp;
-    document.getElementById("speed-val").innerText = speed;
-}
-
-// CİHAZDAN GELEN GERÇEK UYGULAMALAR (Java her 2 saniyede bir günceller)
-function updateRealApps(jsonString) {
-    try {
-        const realApps = JSON.parse(jsonString);
-        const list = document.getElementById('resource-list');
-        
-        // Eğer az önce temizlik butonuna basıldıysa ve liste temizlendiyse hemen üzerine yazmasın diye kontrol
-        if (list.innerText.includes("TÜM SÖMÜRÜCÜLER KAZINDI")) return;
-
-        list.innerHTML = "";
-        
-        if (realApps.length === 0) {
-            list.innerHTML = `<div style="color:#64748b; text-align:center; font-size:12px; padding:10px;">Arka planda çalışan uygulama bulunamadı.</div>`;
-            return;
+            const toast = document.getElementById('toast');
+            toast.style.borderColor = color;
+            toast.innerText = text;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
-        realApps.forEach(app => {
-            list.innerHTML += `
-                <div class="monitor-item">
-                    <div class="app-header">
-                        <span class="app-name">${app.name}</span>
-                        <span class="app-warn">Aktif Sömürü</span>
-                    </div>
-                    <div class="app-details">
-                        <span class="detail-tag">RAM: ${app.ram}</span>
-                        <span class="detail-tag">CPU: ${app.cpu}</span>
-                        <span class="detail-tag" style="color: #ff007f;">PİL: ${app.battery}</span>
-                    </div>
-                </div>
-            `;
-        });
-    } catch (e) {
-        console.error("JSON Parse Hatası: ", e);
-    }
-}
+        // Java'yı tetikleme
+        function runRoot(action) {
+            showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
+            if (window.AndroidBridge && window.AndroidBridge.performAction) {
+                window.AndroidBridge.performAction(action);
+            } else {
+                showToast("Simülasyon Modu", "#ff0055");
+            }
+        }
+
+        // Java başarıyla çalıştırdığında
+        function onActionCompleted(action, msg) {
+            showToast(msg, action === 'ram' ? '#00bfff' : '#ff0055');
+        }
+
+        // Cihaz Bilgilerini Güncelleme (Java her saniye tetikler)
+        function updateMetrics(ram, temp, speed) {
+            document.getElementById("ram-val").innerText = ram + "%";
+            document.getElementById("temp-val").innerText = temp;
+            document.getElementById("speed-val").innerText = speed;
+        }
+
+        // Cihazdaki Gerçek Uygulamaları Listeleme (Java her saniye tetikler)
+        function updateRealApps(jsonString) {
+            try {
+                const realApps = JSON.parse(jsonString);
+                const list = document.getElementById('resource-list');
+                list.innerHTML = "";
+                
+                if (realApps.length === 0) {
+                    list.innerHTML = `<div style="color:#64748b; text-align:center; font-size:12px; padding:10px;">Aktif çalışan taranıyor...</div>`;
+                    return;
+                }
+
+                realApps.forEach(app => {
+                    list.innerHTML += `
+                        <div class="monitor-item">
+                            <div class="app-header">
+                                <span class="app-name">${app.name}</span>
+                                <span style="color:#ff9f00; font-size:10px;">Aktif</span>
+                            </div>
+                            <div class="app-details">
+                                <span class="detail-tag">RAM: ${app.ram}</span>
+                                <span class="detail-tag">CPU: ${app.cpu}</span>
+                                <span class="detail-tag" style="color:#ff007f;">PİL: ${app.battery}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                console.error("Parse hatası", e);
+            }
+        }
+    </script>
+</body>
+</html>
