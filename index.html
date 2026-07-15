@@ -34,7 +34,14 @@
         .monitor-card { background: rgba(10, 12, 22, 0.9); border: 1px solid rgba(255, 0, 127, 0.15); border-radius: 14px; padding: 15px; }
         .monitor-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #ff007f; margin-bottom: 12px; }
         .monitor-list { display: flex; flex-direction: column; gap: 10px; }
-        .monitor-item { display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); padding-bottom: 8px; }
+        .monitor-item { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03); 
+            padding-bottom: 8px;
+            transition: all 0.5s ease;
+        }
         .app-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
         .app-name { color: #f8fafc; }
         .app-details { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; }
@@ -80,7 +87,7 @@
         </div>
 
         <div class="monitor-card">
-            <div class="monitor-title">⚠️ EN ÇOK TÜKETEN UYGULAMALAR (CİHAZDAN)</div>
+            <div class="monitor-title">⚠️ EN ÇOK TÜKETEN UYGULAMALAR</div>
             <div class="monitor-list" id="resource-list">
                 <div style="color: #64748b; text-align: center; font-size: 12px; padding: 10px;">Yükleniyor...</div>
             </div>
@@ -108,6 +115,8 @@
     <div id="toast">BAĞLANTI OK</div>
 
     <script>
+        let isCleaning = false; // Temizlik esnasında listenin hemen geri dolmasını engellemek için kilit
+
         function showToast(text, color = '#00f2fe') {
             const toast = document.getElementById('toast');
             toast.style.borderColor = color;
@@ -116,37 +125,65 @@
             setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
-        // Java'yı tetikleme
+        // Java tetikleme köprüsü
         function runRoot(action) {
             showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
             if (window.AndroidBridge && window.AndroidBridge.performAction) {
                 window.AndroidBridge.performAction(action);
             } else {
                 showToast("Simülasyon Modu", "#ff0055");
+                if (action === 'ram') {
+                    clearAppsList();
+                }
             }
         }
 
-        // Java başarıyla çalıştırdığında
+        // Java işlem bittiğinde tetikler
         function onActionCompleted(action, msg) {
             showToast(msg, action === 'ram' ? '#00bfff' : '#ff0055');
         }
 
-        // Cihaz Bilgilerini Güncelleme (Java her saniye tetikler)
+        // RAM temizleme tetiklendiğinde arayüzü boşaltan fonksiyon
+        function clearAppsList() {
+            isCleaning = true;
+            const list = document.getElementById('resource-list');
+            
+            // Tüm elemanları karartıp silme efekti uygula
+            list.style.opacity = '0';
+            
+            setTimeout(() => {
+                list.innerHTML = `
+                    <div style="color: #00ffcc; text-align: center; font-weight: bold; font-size: 13px; padding: 15px 0;">
+                        ✨ SÖMÜRÜCÜLER TEMİZLENDİ! SİSTEM AKICI.
+                    </div>
+                `;
+                list.style.opacity = '1';
+                
+                // 4 saniye sonra yeni gelecek listeye izin ver
+                setTimeout(() => {
+                    isCleaning = false;
+                }, 4000);
+            }, 500);
+        }
+
+        // Göstergeleri güncelleme
         function updateMetrics(ram, temp, speed) {
             document.getElementById("ram-val").innerText = ram + "%";
             document.getElementById("temp-val").innerText = temp;
             document.getElementById("speed-val").innerText = speed;
         }
 
-        // Cihazdaki Gerçek Uygulamaları Listeleme (Java her saniye tetikler)
+        // Uygulama Listesini Güncelleme
         function updateRealApps(jsonString) {
+            if (isCleaning) return; // Temizlik yapılıyorsa gelen listeyi görmezden gel
+
             try {
                 const realApps = JSON.parse(jsonString);
                 const list = document.getElementById('resource-list');
                 list.innerHTML = "";
                 
                 if (realApps.length === 0) {
-                    list.innerHTML = `<div style="color:#64748b; text-align:center; font-size:12px; padding:10px;">Aktif çalışan taranıyor...</div>`;
+                    list.innerHTML = `<div style="color:#64748b; text-align:center; font-size:12px; padding:10px;">Arka planda çalışan sömürücü yok.</div>`;
                     return;
                 }
 
@@ -155,7 +192,7 @@
                         <div class="monitor-item">
                             <div class="app-header">
                                 <span class="app-name">${app.name}</span>
-                                <span style="color:#ff9f00; font-size:10px;">Aktif</span>
+                                <span style="color:#ff0055; font-size:10px; font-weight: bold; letter-spacing: 0.5px;">Sömürüyor</span>
                             </div>
                             <div class="app-details">
                                 <span class="detail-tag">RAM: ${app.ram}</span>
