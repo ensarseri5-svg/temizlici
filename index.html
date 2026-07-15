@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Apex Performance Engine</title>
+    <title>Apex Kernel Controller</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -41,14 +41,16 @@
         }
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 900;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             background: linear-gradient(90deg, #00f2fe, #ff007f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
         }
+        
+        /* 📊 GERÇEK ZAMANLI TELEMETRİ GÖSTERGELERİ */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -62,21 +64,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.05);
         }
         .stat-label {
             font-size: 10px;
             color: #64748b;
             text-transform: uppercase;
             font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
         .stat-value {
             font-family: 'Orbitron', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: #00f2fe;
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
         }
 
-        /* 📊 CANLI KAYNAK SÖMÜRÜCÜLERİ PANELİ */
+        /* 🔋 ARKA PLAN SÖMÜRÜCÜLERİ */
         .monitor-card {
             background: rgba(10, 12, 22, 0.9);
             border: 1px solid rgba(255, 0, 127, 0.15);
@@ -86,29 +92,68 @@
         }
         .monitor-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #ff007f;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
             text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ff007f;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #ff007f;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
         }
         .monitor-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .monitor-item {
             display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            padding-bottom: 4px;
+            flex-direction: column;
+            gap: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding-bottom: 8px;
         }
-        .app-name { color: #f8fafc; font-weight: bold; }
-        .app-usage { font-family: 'Orbitron', sans-serif; }
+        .monitor-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .app-name { color: #f8fafc; }
+        .app-warn { color: #ff9f00; font-size: 10px; padding: 1px 5px; background: rgba(255, 159, 0, 0.1); border-radius: 4px; }
+        .app-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .detail-tag {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-        /* Butonlar */
+        /* 🔘 BUTONLAR */
         .control-section {
             display: flex;
             flex-direction: column;
@@ -123,20 +168,24 @@
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn-card:active {
+            transform: scale(0.97);
         }
         .btn-red::before { content: ''; position: absolute; left:0; top:0; width:5px; height:100%; background: #ff0055; }
-        .btn-red { position: relative; overflow: hidden; }
-        .btn-red:active { transform: scale(0.97); box-shadow: 0 0 15px rgba(255, 0, 85, 0.4); }
+        .btn-red:active { box-shadow: 0 0 15px rgba(255, 0, 85, 0.4); }
         
         .btn-blue::before { content: ''; position: absolute; left:0; top:0; width:5px; height:100%; background: #00bfff; }
-        .btn-blue { position: relative; overflow: hidden; }
-        .btn-blue:active { transform: scale(0.97); box-shadow: 0 0 15px rgba(0, 191, 255, 0.4); }
+        .btn-blue:active { box-shadow: 0 0 15px rgba(0, 191, 255, 0.4); }
 
         .btn-info { display: flex; flex-direction: column; gap: 2px; max-width: 80%; }
-        .btn-title { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; }
+        .btn-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; }
         .btn-desc { font-size: 11px; color: #64748b; }
 
+        /* TOAST BİLDİRİM */
         #toast {
             position: fixed;
             bottom: 20px;
@@ -165,20 +214,23 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <span class="stat-label">Sıcaklık</span>
-                <span class="stat-value" id="cpu-temp">39°C</span>
+                <span class="stat-value" id="temp-val">--°C</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Ram Yükü</span>
-                <span class="stat-value" id="ram-usage">54%</span>
+                <span class="stat-value" id="ram-val">--%</span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Ping (MS)</span>
-                <span class="stat-value" id="ping-val" style="color: #00ff66;">4 ms</span>
+                <span class="stat-label">Frekans</span>
+                <span class="stat-value" id="speed-val" style="color: #00ff66; font-size: 12px;">-- MHz</span>
             </div>
         </div>
 
         <div class="monitor-card">
-            <div class="monitor-title">⚠️ EN ÇOK TÜKETEN UYGULAMALAR</div>
+            <div class="monitor-title">
+                <span>⚠️ EN ÇOK TÜKETEN UYGULAMALAR</span>
+                <span class="live-dot"></span>
+            </div>
             <div class="monitor-list" id="resource-list">
                 </div>
         </div>
@@ -187,7 +239,7 @@
             <div class="btn-card btn-red" onclick="runRoot('tam-hiz')">
                 <div class="btn-info">
                     <span class="btn-title" style="color: #ff0055;">🚀 MAX PERFORMANCE</span>
-                    <span class="btn-desc">İşlemciyi en yüksek hıza kilitler, gecikmeyi (ms) düşürür.</span>
+                    <span class="btn-desc">İşlemciyi en yüksek hıza kilitler, gecikmeyi (ms) sıfıra indirir.</span>
                 </div>
                 <span>🔥</span>
             </div>
@@ -195,7 +247,7 @@
             <div class="btn-card btn-blue" onclick="runRoot('ram')">
                 <div class="btn-info">
                     <span class="btn-title" style="color: #00bfff;">🧹 RAM & CACHE FLUSH</span>
-                    <span class="btn-desc">Arka plandaki sömürücüleri kazır, hafızayı sıfırlar.</span>
+                    <span class="btn-desc">Arka plandaki sömürücüleri kazır, önbelleği temizler.</span>
                 </div>
                 <span>✨</span>
             </div>
@@ -217,56 +269,76 @@
         function runRoot(action) {
             showToast("KOMUT GÖNDERİLİYOR...", "#00f2fe");
             if (window.AndroidBridge) {
-                // Java'daki köprüyü anında tetikler (Milisaniyeler içinde!)
                 window.AndroidBridge.performAction(action);
             } else {
-                showToast("Simülasyon Aktif (Java Köprüsü Yok)", "#ff0055");
+                showToast("Simülasyon Modu (Köprü Yok)", "#ff0055");
+                // Köprü yoksa test amaçlı simüle et
+                setTimeout(() => {
+                    onActionCompleted(action, "Tamamlandı (Simüle)");
+                }, 1000);
             }
         }
 
-        // Java'dan tetiklenecek geri bildirim fonksiyonu
+        // Java komutu başarıyla çalıştırdığında bu fonksiyonu tetikleyecek
         function onActionCompleted(action, msg) {
             if (action === 'ram') {
-                document.getElementById('ram-usage').innerText = "18%";
                 showToast("TEMİZLENDİ: " + msg, "#00bfff");
-                updateMonitorData(true); // Verileri sıfırla
-            } else {
-                showToast("PERFORMANS: " + msg, "#ff0055");
+                clearMonitorList();
+            } else if (action === 'tam-hiz') {
+                showToast("PERFORMANS MODU: " + msg, "#ff0055");
             }
         }
 
-        // Canlı Kaynak Tüketim Verileri (Simüle edilen sömürücüler)
-        const apps = [
+        // SİSTEM GÖSTERGELERİNİ GÜNCELLEYEN KLASİK METOT (Java her 2 saniyede bir tetikler)
+        function updateMetrics(ram, temp, speed) {
+            document.getElementById("ram-val").innerText = ram + "%";
+            document.getElementById("temp-val").innerText = temp;
+            document.getElementById("speed-val").innerText = speed;
+        }
+
+        // Sömüren uygulamalar listesi veri tabanı
+        const originalApps = [
             { name: "Instagram", ram: "1.2 GB", cpu: "%28", battery: "Yüksek" },
             { name: "TikTok", ram: "950 MB", cpu: "%34", battery: "Aşırı" },
             { name: "Google Play Servisleri", ram: "420 MB", cpu: "%12", battery: "Orta" },
-            { name: "WhatsApp", ram: "310 MB", cpu: "%8", battery: "Düşük" },
             { name: "Sistem Arayüzü", ram: "550 MB", cpu: "%15", battery: "Orta" }
         ];
 
-        function updateMonitorData(cleaned = false) {
+        function loadMonitorData() {
             const list = document.getElementById('resource-list');
             list.innerHTML = "";
-            if (cleaned) {
-                list.innerHTML = `<div style="color:#00ff66; text-align:center; font-weight:bold;">✨ TÜM ARKA PLAN SİLİNDİ! SİSTEM AKICI.</div>`;
-                return;
-            }
-            // Sömürenleri listele
-            apps.forEach(app => {
+            originalApps.forEach(app => {
                 list.innerHTML += `
                     <div class="monitor-item">
-                        <span class="app-name">${app.name}</span>
-                        <span class="app-usage" style="color: #ff007f;">RAM: ${app.ram} | CPU: ${app.cpu} | Pil: ${app.battery}</span>
+                        <div class="app-header">
+                            <span class="app-name">${app.name}</span>
+                            <span class="app-warn">Sömürüyor</span>
+                        </div>
+                        <div class="app-details">
+                            <span class="detail-tag">RAM: ${app.ram}</span>
+                            <span class="detail-tag">CPU: ${app.cpu}</span>
+                            <span class="detail-tag" style="color: #ff007f;">PİL: ${app.battery}</span>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        // İlk yükleme ve döngüsel ısı takipleri
-        updateMonitorData();
-        setInterval(() => {
-            document.getElementById('cpu-temp').innerText = (35 + Math.floor(Math.random() * 8)) + "°C";
-        }, 3000);
+        function clearMonitorList() {
+            const list = document.getElementById('resource-list');
+            list.innerHTML = `
+                <div style="color:#00ff66; text-align:center; font-weight:bold; font-size: 13px; padding: 10px 0;">
+                    ✨ TÜM SÖMÜRÜCÜLER KAZINDI! SİSTEM AKICI.
+                </div>
+            `;
+            // 8 saniye sonra listeyi yavaş yavaş tekrar simüle et (sistem yeni servisleri açtıkça)
+            setTimeout(() => {
+                loadMonitorData();
+            }, 8000);
+        }
+
+        // İlk açılışta sömüren listesini yükle
+        loadMonitorData();
     </script>
 </body>
 </html>
